@@ -8,15 +8,7 @@ const helmet = require('helmet');
 const passport = require('passport');
 const cors = require('cors');
 require('dotenv').config();
-require('./passport');
-
-// Mongo DB
-const mongoose = require("mongoose");
-const myMongoDB = process.env.MONGO;
-mongoose.connect(myMongoDB, {useNewUrlParser: true, useUnifiedTopology: true});
-const db = mongoose.connection;
-db.on('error', () => console.error.bind(console, 'MongoDB connection error'));
-
+// require('./passport');
 
 const app = express();
 
@@ -34,13 +26,9 @@ app.use(express.urlencoded({ extended: false }));
 app.use(compression());
 app.use(helmet());
 
-const userRouter = require('./routes/userRoute');
-const postRouter = require('./routes/postRoute');
-const friendsRouter = require('./routes/friendsRoute');
+const indexRouter = require('./routes/index');
 
-app.use('/api/users', userRouter);
-app.use('/api/posts', postRouter);
-app.use('/api/friends', friendsRouter);
+app.use('/', indexRouter);
 
 app.use((req, res, next) => {
     res.status(404)
