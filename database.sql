@@ -3,8 +3,8 @@ CREATE TABLE users(
     user_id SERIAL PRIMARY KEY,
     username VARCHAR(12),
     password TEXT,
---     date_joined DATE,
---     picture_url TEXT
+    date_joined DATE,
+    picture_url TEXT
 );
 
 CREATE TABLE posts(

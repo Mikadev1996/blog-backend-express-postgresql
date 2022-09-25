@@ -1,5 +1,4 @@
 const express = require('express');
-const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const session = require('express-session')
@@ -27,8 +26,10 @@ app.use(compression());
 app.use(helmet());
 
 const indexRouter = require('./routes/index');
+const usersRouter = require('./routes/users');
 
-app.use('/', indexRouter);
+app.use('/api/', indexRouter);
+app.use('/api/users', usersRouter);
 
 app.use((req, res, next) => {
     res.status(404)
