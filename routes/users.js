@@ -10,9 +10,6 @@ router.post('/log-in', usersController.log_in);
 router.post('/sign-up', usersController.sign_up);
 router.post('/log-out', usersController.log_out);
 
-router.get('/facebook', passport.authenticate('facebook', {session: false}));
-router.get('/facebook/callback', usersController.facebook_callback);
-
 // User details
 router.get('/:id', usersController.get_user);
 

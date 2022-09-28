@@ -1,31 +1,20 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
-const FacebookStrategy = require('passport-facebook').Strategy;
-const User = require('./models/userModel');
 const bcrypt = require('bcryptjs');
 const passportJWT = require('passport-jwt');
 const JWTStrategy = passportJWT.Strategy;
 const ExtractJWT = passportJWT.ExtractJwt;
-const db = require('queries');
+const db = require('./queries');
 
-passport.use(new FacebookStrategy({
-        clientID: process.env.FACEBOOK_APP_ID,
-        clientSecret: process.env.FACEBOOK_APP_SECRET,
-        callbackURL: process.env.callbackURL,
-        profileFields: ['id', 'first_name', 'last_name']
-    },
-    function(accessToken, refreshToken, profile, cb) {
-        console.log(profile)
-        User.findOrCreate({ facebookId: profile.id, firstname: profile._json.first_name, surname: profile._json.last_name}, function (err, user) {
-            return cb(err, user);
-        });
-    }
-));
 
 passport.use(
     new LocalStrategy((username, password, done) => {
-        User.findOne({username: username}, (err, user) => {
+        const queryText = 'SELECT * FROM users WHERE username = $1';
+        const queryValues = [username];
+        db.query(queryText, queryValues, (err, results) => {
             if (err) return done(err);
+
+            const user = results.rows[0];
             if (!user) return done(null, false, { message: "Incorrect Username"});
 
             bcrypt.compare(password, user.password, (err, res) => {
@@ -49,7 +38,11 @@ passport.serializeUser(function(user, done) {
 })
 
 passport.deserializeUser(function (id, done) {
-    User.findById(id, function(err, user) {
+    const queryText = 'SELECT * FROM users WHERE user_id = $1';
+    const queryValues = [id];
+
+    db.query(queryText, queryValues, (err, results) => {
+        const user = results.rows[0];
         done(err, user);
     })
 })
