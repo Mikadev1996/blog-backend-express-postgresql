@@ -32,14 +32,14 @@ exports.log_in = [
             }
 
             jwt.sign(
-                { _id: user._id, username: user.username},
+                { user_id: user.user_id, username: user.username},
                 process.env.JWT_KEY,
                 { expiresIn: "30m" },
                 (err, token) => {
                     if (err) return res.status(400).json(err);
                     res.json({
                         token: token,
-                        user: { _id: user._id, username: user.username},
+                        user: { user_id: user.user_id, username: user.username},
                     });
                 }
             );

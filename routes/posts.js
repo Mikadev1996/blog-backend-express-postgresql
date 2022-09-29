@@ -4,7 +4,8 @@ const postController = require('../controllers/postController');
 const authenticateToken = require('../authenticateToken');
 
 router.get('/', postController.all_posts);
-router.get('/:id', postController.post_by_user);
+router.get('/user/:id', postController.posts_by_user);
+router.get('/:id', postController.get_post);
 
 router.post('/create', authenticateToken, postController.create_post);
 router.delete('/:id', authenticateToken, postController.delete_post);
