@@ -12,11 +12,13 @@ exports.all_posts = (req, res, next) => {
 
 exports.get_post = (req, res, next) => {
     const text = 'SELECT * FROM posts WHERE post_id = $1';
+    const text2 = 'SELECT comments, users.username, users.picture_url FROM comments INNER JOIN users ON comments.user_id = users.user_id WHERE comments.post_id = $1';
     const values = [req.params.id];
-    db.query(text, values, (err, results) => {
-        if (err) return res.json({error: err});
-        res.json(results.rows[0]);
-    })
+    Promise.all([db.query(text, values), db.query(text2, values)])
+        .then(([results1, results2]) => {
+            res.json({posts: results1.rows, comments: results2.rows});
+        })
+        .catch(err => res.json({error: err}));
 }
 
 exports.posts_by_user = (req, res, next) => {
@@ -28,6 +30,7 @@ exports.posts_by_user = (req, res, next) => {
         res.json(results.rows);
     })
 }
+
 
 exports.create_post = [
     body('text', 'Text must not be empty').trim().isLength({min: 1}).escape(),
