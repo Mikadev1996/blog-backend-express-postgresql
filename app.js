@@ -27,9 +27,14 @@ app.use(helmet());
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
+const postsRouter = require('./routes/posts');
+const commentsRouter = require('./routes/comments');
+
 
 app.use('/api/', indexRouter);
 app.use('/api/users', usersRouter);
+app.use('/api/posts', postsRouter);
+app.use('/api/comments', commentsRouter);
 
 app.use((req, res, next) => {
     res.status(404)

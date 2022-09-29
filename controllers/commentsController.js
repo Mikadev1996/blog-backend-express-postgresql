@@ -1,9 +1,6 @@
 const db = require('../queries');
 const {body, validationResult} = require('express-validator');
-const passport = require('passport');
-const jwt = require('jsonwebtoken');
-const url = require('../constants');
-const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken')
 
 exports.get_comments = (req, res, next) => {
     const text = 'SELECT comments, users.username, users.picture_url FROM comments INNER JOIN users ON comments.user_id = users.user_id WHERE comments.post_id = $1';
@@ -26,8 +23,9 @@ exports.post_comment = [
         jwt.verify(req.token, process.env.JWT_KEY, (err, authData) => {
             if (err) res.json({error: "JWT Authentication Error"});
 
+            const date = new Date().toISOString().slice(0, 19).replace('T', ' ');
             const text = 'INSERT INTO comments (text, timestamp, user_id, post_id) VALUES($1, $2, $3, $4) RETURNING *';
-            const values = [req.body.text, Date.now(), authData.user_id, req.params.id];
+            const values = [req.body.text, date, authData.user_id, req.params.id];
             db.query(text, values, (err, results) => {
                 if (err) res.json({error: err});
                 res.json(results.rows);
