@@ -1,8 +1,9 @@
 const express = require('express');
 const router = express.Router();
+const authenticationToken = require('../authenticateToken');
 const commentController = require('../controllers/commentController');
 
 router.get('/:id', commentController.get_comments);
-router.post('/:id', commentController.post_comment);
+router.post('/:id', authenticationToken, commentController.post_comment);
 
 module.exports = router;
