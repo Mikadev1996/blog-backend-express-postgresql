@@ -75,7 +75,7 @@ exports.update_post = [
             return;
         }
 
-        const text = 'UPDATE posts SET text = $1, edited = true, published = $2 WHERE post_id = $3';
+        const text = 'UPDATE posts SET text = $1, edited = true, published = $2 WHERE post_id = $3 RETURNING *';
         const values = [req.body.text, req.body.published, req.params.id];
 
         db.query(text, values, (err, results) => {
@@ -86,5 +86,11 @@ exports.update_post = [
 ]
 
 exports.like_post = (req, res, next) => {
+    const text = 'UPDATE posts SET likes = likes + 1 WHERE post_id = $1 RETURNING *';
+    const values = [req.params.id];
 
+    db.query(text, values, (err, results) => {
+        if (err) return res.json({error: err});
+        res.json(results.rows);
+    })
 }
