@@ -12,7 +12,7 @@ exports.all_posts = (req, res, next) => {
 
 exports.get_post = (req, res, next) => {
     const text = 'SELECT * FROM posts WHERE post_id = $1';
-    const text2 = 'SELECT comments, users.username, users.picture_url FROM comments INNER JOIN users ON comments.user_id = users.user_id WHERE comments.post_id = $1';
+    const text2 = 'SELECT comments.text, comments.timestamp, users.username, users.picture_url FROM comments INNER JOIN users ON comments.user_id = users.user_id WHERE comments.post_id = $1';
     const values = [req.params.id];
     Promise.all([db.query(text, values), db.query(text2, values)])
         .then(([results1, results2]) => {
