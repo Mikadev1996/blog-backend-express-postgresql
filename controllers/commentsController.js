@@ -1,4 +1,4 @@
-const db = require('../queries');
+const db = require('../db');
 const {body, validationResult} = require('express-validator');
 const jwt = require('jsonwebtoken')
 

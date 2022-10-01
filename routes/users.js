@@ -1,6 +1,6 @@
 const express = require('express');
 const usersController = require('../controllers/usersController');
-const authenticationToken = require('../authenticateToken');
+const authenticationToken = require('../auth/authenticateToken');
 const router = express.Router();
 
 // User Auth
@@ -9,7 +9,7 @@ router.post('/sign-up', usersController.sign_up);
 router.post('/log-out', usersController.log_out);
 
 // User details
-router.get('/', authenticationToken, usersController.get_all_users);
-router.get('/:id', authenticationToken, usersController.get_user);
+router.get('/', usersController.get_all_users);
+router.get('/:id', usersController.get_user);
 
 module.exports = router;

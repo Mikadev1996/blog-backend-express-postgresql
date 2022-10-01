@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs');
 const passportJWT = require('passport-jwt');
 const JWTStrategy = passportJWT.Strategy;
 const ExtractJWT = passportJWT.ExtractJwt;
-const db = require('./queries');
+const db = require('../db');
 
 
 passport.use(

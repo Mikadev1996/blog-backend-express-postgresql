@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const { body, validationResult } = require('express-validator');
-const db = require('../queries');
+const db = require('../db');
 
 exports.all_posts = (req, res, next) => {
     const text = 'SELECT posts, users.username, users.picture_url FROM posts INNER JOIN users ON users.user_id = posts.user_id ORDER BY timestamp DESC';

@@ -7,7 +7,7 @@ const helmet = require('helmet');
 const passport = require('passport');
 const cors = require('cors');
 require('dotenv').config();
-require('./passport');
+require('./auth/passport');
 
 const app = express();
 

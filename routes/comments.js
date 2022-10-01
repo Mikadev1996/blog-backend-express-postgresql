@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const authenticationToken = require('../authenticateToken');
+const authenticationToken = require('../auth/authenticateToken');
 const commentController = require('../controllers/commentsController');
 
 router.get('/:id', commentController.get_comments);
