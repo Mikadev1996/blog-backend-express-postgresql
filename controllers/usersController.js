@@ -69,7 +69,7 @@ exports.sign_up = [
                 if (err) return next(err);
 
                 const queryText = 'INSERT INTO users (username, password, date_joined, picture_url) VALUES($1, $2, $3, $4) RETURNING (username, date_joined, picture_url)';
-                const queryValues = [req.body.username, hashedPass, req.body.date_joined, req.body.picture_url];
+                const queryValues = [req.body.username, hashedPass, Date.now(), ''];
 
                 db.query(queryText, queryValues, (err, results) => {
                     if (err) return res.json({error: err});
