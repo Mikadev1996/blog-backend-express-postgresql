@@ -94,9 +94,12 @@ exports.log_out = (req, res, next) => {
 }
 
 exports.get_user = (req, res, next) => {
-    const id = req.params.id;
-    db.query(`SELECT (username, date_joined, picture_url) FROM users WHERE user_id = ${id}`, (err, results) => {
+    const text = 'SELECT * FROM users WHERE user_id = $1';
+    const values = [req.params.id]
+
+    db.query(text, values, (err, results) => {
         if (err) return res.json({error: err})
-        res.json(results.rows);
+        delete results.rows[0].password;
+        res.json(results.rows[0]);
     });
 }

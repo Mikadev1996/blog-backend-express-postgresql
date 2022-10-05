@@ -23,7 +23,7 @@ exports.get_post = (req, res, next) => {
 
 exports.posts_by_user = (req, res, next) => {
     const id = req.params.id;
-    const text = 'SELECT posts.post_id, posts.text, posts.likes, posts.timestamp, posts.edited, posts.published, posts.user_id, users.user_id, users.username, users.picture_url FROM posts INNER JOIN users ON users.user_id = posts.user_id WHERE users.user_id = $1 ORDER BY timestamp DESC';
+    const text = 'SELECT posts.post_id, posts.text, posts.likes, posts.timestamp, posts.edited, posts.published, users.user_id, users.username, users.picture_url FROM posts INNER JOIN users ON users.user_id = posts.user_id WHERE users.user_id = $1 ORDER BY timestamp DESC';
     const values = [id];
     db.query(text, values, (err, results) => {
         if (err) return res.json({error: err});
