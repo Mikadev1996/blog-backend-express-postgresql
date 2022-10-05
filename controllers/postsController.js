@@ -3,7 +3,7 @@ const { body, validationResult } = require('express-validator');
 const db = require('../db');
 
 exports.all_posts = (req, res, next) => {
-    const text = 'SELECT posts, users.username, users.picture_url FROM posts INNER JOIN users ON users.user_id = posts.user_id ORDER BY timestamp DESC';
+    const text = 'SELECT posts.post_id, posts.text, posts.likes, posts.timestamp, posts.edited, posts.published, users.user_id, users.username, users.picture_url FROM posts INNER JOIN users ON users.user_id = posts.user_id ORDER BY timestamp DESC';
     db.query(text, (err, results) => {
         if (err) return res.json({error: err});
         res.json(results.rows);
@@ -16,7 +16,7 @@ exports.get_post = (req, res, next) => {
     const values = [req.params.id];
     Promise.all([db.query(text, values), db.query(text2, values)])
         .then(([results1, results2]) => {
-            res.json({posts: results1.rows, comments: results2.rows});
+            res.json({post: results1.rows[0], comments: results2.rows});
         })
         .catch(err => res.json({error: err}));
 }
