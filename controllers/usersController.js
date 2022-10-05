@@ -73,7 +73,7 @@ exports.sign_up = [
 
                 db.query(queryText, queryValues, (err, results) => {
                     if (err) return res.json({error: err});
-                    res.redirect(`${url}/login`)
+                    res.status(200).json({message: 'success'});
                 });
             })
         });

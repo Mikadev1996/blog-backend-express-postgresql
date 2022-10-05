@@ -11,6 +11,6 @@ router.post('/create', authenticateToken, postController.create_post);
 router.delete('/:id', authenticateToken, postController.delete_post);
 
 router.put('/:id', authenticateToken, postController.update_post);
-router.put('/:id/likes', authenticateToken, postController.like_post);
+router.put('/:id/like', authenticateToken, postController.like_post);
 
 module.exports = router;
