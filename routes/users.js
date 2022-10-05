@@ -10,6 +10,7 @@ router.post('/log-out', usersController.log_out);
 
 // User details
 router.get('/', usersController.get_all_users);
+router.get('/', authenticationToken, usersController.current_user);
 router.get('/:id', usersController.get_user);
 
 module.exports = router;

@@ -5,13 +5,6 @@ const jwt = require('jsonwebtoken');
 const url = require('../constants');
 const bcrypt = require('bcryptjs');
 
-exports.get_all_users = (req, res, next) => {
-    db.query(`SELECT (username, date_joined, picture_url) FROM users;`, (err, results) => {
-        if (err) return res.json({error: err});
-        res.status(200).json(results.rows);
-    })
-}
-
 exports.log_in = [
     body('username', 'Name must not be empty.').trim().isLength({min: 1}).escape(),
     body('password', 'Password must not be empty.').trim().isLength({min: 1}).escape(),
@@ -45,7 +38,7 @@ exports.log_in = [
             );
         })(req, res);
     }
-]
+];
 
 exports.sign_up = [
     body('username', 'Username must not be empty').trim().isLength({min: 1}).escape(),
@@ -91,6 +84,27 @@ exports.log_out = (req, res, next) => {
         }
     })
     res.redirect('/');
+}
+
+exports.get_all_users = (req, res, next) => {
+    db.query(`SELECT (username, date_joined, picture_url) FROM users;`, (err, results) => {
+        if (err) return res.json({error: err});
+        res.status(200).json(results.rows);
+    })
+}
+
+exports.current_user = (req, res, next) => {
+    jwt.verify(req.token, process.env.JWT_KEY, (err, authData) => {
+        if (err) return res.json({error: err, message: "JWT Auth Error"});
+
+        const text = 'SELECT * FROM users WHERE user_id = $1';
+        const values = [authData.user_id];
+        db.query(text, values, (err, results) => {
+            if (err) return res.json({error: err})
+            delete results.rows[0].password;
+            res.json(results.rows[0]);
+        });
+    })
 }
 
 exports.get_user = (req, res, next) => {
