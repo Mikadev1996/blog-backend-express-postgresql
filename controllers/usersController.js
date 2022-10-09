@@ -61,8 +61,9 @@ exports.sign_up = [
             bcrypt.hash(req.body.password, 10, (err, hashedPass) => {
                 if (err) return next(err);
 
+                const date = new Date().toISOString().slice(0, 19).replace('T', ' ');
                 const queryText = 'INSERT INTO users (username, password, date_joined, picture_url) VALUES($1, $2, $3, $4) RETURNING (username, date_joined, picture_url)';
-                const queryValues = [req.body.username, hashedPass, Date.now(), ''];
+                const queryValues = [req.body.username, hashedPass, date, ''];
 
                 db.query(queryText, queryValues, (err, results) => {
                     if (err) return res.json({error: err});
@@ -87,7 +88,8 @@ exports.log_out = (req, res, next) => {
 }
 
 exports.get_all_users = (req, res, next) => {
-    db.query(`SELECT (username, date_joined, picture_url) FROM users;`, (err, results) => {
+    db.query(`SELECT * FROM users;`, (err, results) => {
+        delete results.rows[0].password;
         if (err) return res.json({error: err});
         res.status(200).json(results.rows);
     })
