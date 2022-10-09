@@ -4,6 +4,7 @@ const passport = require('passport');
 const jwt = require('jsonwebtoken');
 const url = require('../constants');
 const bcrypt = require('bcryptjs');
+const config = require('../constants');
 
 exports.log_in = [
     body('username', 'Name must not be empty.').trim().isLength({min: 1}).escape(),
@@ -78,13 +79,14 @@ exports.sign_up = [
 ];
 
 exports.log_out = (req, res, next) => {
+    const url = config.url.BASE_URL;
     req.logout((err) => {
         if (err) {
-            res.send({error: err});
+            res.json({error: err});
             return next(err);
         }
     })
-    res.redirect('/');
+    res.redirect(`${url}/login`);
 }
 
 exports.get_all_users = (req, res, next) => {
