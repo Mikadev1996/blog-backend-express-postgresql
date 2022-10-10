@@ -3,7 +3,7 @@ const { body, validationResult } = require('express-validator');
 const db = require('../db');
 
 exports.all_posts = (req, res, next) => {
-    const text = 'SELECT posts.post_id, posts.text, posts.likes, posts.timestamp, posts.edited, posts.published, users.user_id, users.username, users.picture_url FROM posts INNER JOIN users ON users.user_id = posts.user_id ORDER BY timestamp DESC';
+    const text = 'SELECT posts.post_id, posts.text, posts.likes, posts.timestamp, posts.edited, posts.title, users.user_id, users.username, users.picture_url FROM posts INNER JOIN users ON users.user_id = posts.user_id ORDER BY timestamp DESC';
     db.query(text, (err, results) => {
         if (err) return res.json({error: err});
         res.json(results.rows);
@@ -23,7 +23,7 @@ exports.get_post = (req, res, next) => {
 
 exports.posts_by_user = (req, res, next) => {
     const id = req.params.id;
-    const text = 'SELECT posts.post_id, posts.text, posts.likes, posts.timestamp, posts.edited, posts.published, users.user_id, users.username, users.picture_url FROM posts INNER JOIN users ON users.user_id = posts.user_id WHERE users.user_id = $1 ORDER BY timestamp DESC';
+    const text = 'SELECT posts.post_id, posts.text, posts.likes, posts.timestamp, posts.edited, posts.title, users.user_id, users.username, users.picture_url FROM posts INNER JOIN users ON users.user_id = posts.user_id WHERE users.user_id = $1 ORDER BY timestamp DESC';
     const values = [id];
     db.query(text, values, (err, results) => {
         if (err) return res.json({error: err});
@@ -44,8 +44,8 @@ exports.create_post = [
         jwt.verify(req.token, process.env.JWT_KEY, (err, authData) => {
             if (err) res.json({error: "JWT Authentication Error"});
 
-            const text = 'INSERT INTO posts (text, likes, timestamp, edited, published, user_id) VALUES($1, 0, $2, false, true, $3) RETURNING *';
-            const values = [req.body.text, Date.now(), authData.user_id];
+            const text = 'INSERT INTO posts (text, likes, timestamp, edited, title, user_id) VALUES($1, 0, $2, false, $3, $4) RETURNING *';
+            const values = [req.body.text, Date.now(), req.body.title, authData.user_id];
 
             db.query(text, values, (err, results) => {
                 if (err) return res.json({error: err});
@@ -78,8 +78,8 @@ exports.update_post = [
             return;
         }
 
-        const text = 'UPDATE posts SET text = $1, edited = true, published = $2 WHERE post_id = $3 RETURNING *';
-        const values = [req.body.text, req.body.published, req.params.id];
+        const text = 'UPDATE posts SET text = $1, edited = true, title = $2 WHERE post_id = $3 RETURNING *';
+        const values = [req.body.text, req.body.title, req.params.id];
 
         db.query(text, values, (err, results) => {
             if (err) return res.json({error: err});
