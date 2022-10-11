@@ -33,7 +33,9 @@ exports.posts_by_user = (req, res, next) => {
 
 
 exports.create_post = [
-    body('text', 'Text must not be empty').trim().isLength({min: 1}).escape(),
+    body('text', 'Text must not be empty').trim().escape(),
+    body('title', 'Text must not be empty').trim().isLength({min: 1}).escape(),
+
     (req, res, next) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -70,7 +72,8 @@ exports.delete_post = (req, res, next) => {
 }
 
 exports.update_post = [
-    body('text', 'Text must not be empty').trim().isLength({min: 1}).escape(),
+    body('text', 'Text must not be empty').trim().escape(),
+    body('title', 'Text must not be empty').trim().isLength({min: 1}).escape(),
     (req, res, next) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
