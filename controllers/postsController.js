@@ -46,8 +46,9 @@ exports.create_post = [
         jwt.verify(req.token, process.env.JWT_KEY, (err, authData) => {
             if (err) res.json({error: "JWT Authentication Error"});
 
+            const date = new Date().toISOString().slice(0, 19).replace('T', ' ');
             const text = 'INSERT INTO posts (text, likes, timestamp, edited, title, user_id) VALUES($1, 0, $2, false, $3, $4) RETURNING *';
-            const values = [req.body.text, Date.now(), req.body.title, authData.user_id];
+            const values = [req.body.text, date, req.body.title, authData.user_id];
 
             db.query(text, values, (err, results) => {
                 if (err) return res.json({error: err});
