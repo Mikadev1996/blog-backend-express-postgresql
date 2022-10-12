@@ -3,7 +3,7 @@ const {body, validationResult} = require('express-validator');
 const jwt = require('jsonwebtoken')
 
 exports.get_comments = (req, res, next) => {
-    const text = 'SELECT comments, users.username, users.picture_url FROM comments INNER JOIN users ON comments.user_id = users.user_id WHERE comments.post_id = $1';
+    const text = 'SELECT comment_id, text, timestamp, post_id, username, date_joined, picture_url FROM comments INNER JOIN users ON comments.user_id = users.user_id WHERE comments.post_id = $1';
     const values = [req.params.id];
     db.query(text, values, (err, results) => {
         if (err) return res.json({error: err});
@@ -28,7 +28,13 @@ exports.post_comment = [
             const values = [req.body.text, date, authData.user_id, req.params.id];
             db.query(text, values, (err, results) => {
                 if (err) res.json({error: err});
-                res.json(results.rows);
+
+                const returnText = 'SELECT comment_id, text, timestamp, post_id, username, date_joined, picture_url FROM comments INNER JOIN users ON comments.user_id = users.user_id WHERE comment_id = $1';
+                const returnValues = [results.rows[0].comment_id];
+                db.query(returnText, returnValues, (err, returnResult) => {
+                    if (err) res.json({error: err});
+                    res.json(returnResult.rows);
+                })
             })
         })
     }
