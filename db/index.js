@@ -1,7 +1,7 @@
 const Pool = require('pg').Pool;
 const pool = new Pool({
-    user: 'blog@blog-express-database',
-    host: 'blog-express-database.postgres.database.azure.com',
+    user: process.env.SQL_NAME,
+    host: process.env.SQL_HOST,
     database: 'postgres',
     password: process.env.SQL_PASS,
     ssl: true
