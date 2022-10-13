@@ -2,3 +2,4 @@ node_modules
 Dockerfile
 .idea
 .vscode
+.env
